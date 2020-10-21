@@ -201,7 +201,7 @@ func (r *Rows) single(a interface{}) error {
 	et := v.Type().Elem()
 	for r.Next() {
 		ev := reflect.New(et)
-		if err := r.Scan(ev); err != nil {
+		if err := r.Scan(&ev); err != nil {
 			return err
 		}
 

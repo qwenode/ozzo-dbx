@@ -1,4 +1,4 @@
-module github.com/go-ozzo/ozzo-dbx
+module github.com/qwenode/ozzo-dbx
 
 go 1.13
 

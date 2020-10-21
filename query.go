@@ -245,6 +245,16 @@ func (q *Query) Column(a interface{}) error {
 	return rows.column(a)
 }
 
+// Single executes the SQL statement and populates the first column,first row of the result into a builtin type.
+// Note that the parameter must be a pointer to a builtin type.
+func (q *Query) Single(a interface{}) error {
+	rows, err := q.Rows()
+	if err != nil {
+		return err
+	}
+	return rows.single(a)
+}
+
 // Rows executes the SQL statement and returns a Rows object to allow retrieving data row by row.
 func (q *Query) Rows() (rows *Rows, err error) {
 	err = q.LastError

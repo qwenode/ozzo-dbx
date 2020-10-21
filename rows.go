@@ -187,6 +187,31 @@ func (r *Rows) column(slice interface{}) error {
 	return r.Close()
 }
 
+// single populates the given a with the first column,first row of the query result.
+// Note that the a must be given as a pointer.
+func (r *Rows) single(a interface{}) error {
+	defer r.Close()
+
+	v := reflect.ValueOf(a)
+	if v.Kind() != reflect.Ptr || v.IsNil() || v.Kind() == reflect.Chan ||
+		v.Kind() == reflect.Array || v.Kind() == reflect.Map || v.Kind() == reflect.Slice {
+		return VarTypeError("must be a pointer to builtin type ")
+	}
+
+	et := v.Type().Elem()
+	for r.Next() {
+		ev := reflect.New(et)
+		if err := r.Scan(ev); err != nil {
+			return err
+		}
+
+		v.Set(ev.Elem())
+		break
+	}
+
+	return r.Close()
+}
+
 // one populates a single row of query result into a struct or a NullStringMap.
 // Note that if a struct is given, it should be a pointer.
 func (r *Rows) one(a interface{}) error {
